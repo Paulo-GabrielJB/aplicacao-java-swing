@@ -27,6 +27,7 @@ public class SistemaView extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        btnCadastrarClientes = new javax.swing.JButton();
         mbPrincipal = new javax.swing.JMenuBar();
         mCadastro = new javax.swing.JMenu();
         miCadastrarCliente = new javax.swing.JMenuItem();
@@ -35,6 +36,10 @@ public class SistemaView extends javax.swing.JFrame {
         mSair = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
+
+        btnCadastrarClientes.setText("Clientes");
+        btnCadastrarClientes.setName("btnCadastrarClientes"); // NOI18N
 
         mbPrincipal.setName("mbPrincipal"); // NOI18N
 
@@ -68,11 +73,17 @@ public class SistemaView extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 598, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addComponent(btnCadastrarClientes)
+                .addContainerGap(453, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 375, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addComponent(btnCadastrarClientes)
+                .addContainerGap(252, Short.MAX_VALUE))
         );
 
         pack();
@@ -118,6 +129,7 @@ public class SistemaView extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCadastrarClientes;
     private javax.swing.JMenu mCadastro;
     private javax.swing.JMenu mPesquisar;
     private javax.swing.JMenu mSair;
