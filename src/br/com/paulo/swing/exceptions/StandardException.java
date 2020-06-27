@@ -1,7 +1,7 @@
 package br.com.paulo.swing.exceptions;
 
 
-public class StandardException extends Exception {
+public class StandardException extends RuntimeException {
     
     public StandardException(String msg){
         super(msg);
