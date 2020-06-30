@@ -32,7 +32,7 @@ public class ClienteController{
         dao.delete(obj);
     }
 
-    public Cliente findByNome(String nome) {
+    public List<Cliente> findByNome(String nome) {
         return dao.findByNome(nome);
     }
     

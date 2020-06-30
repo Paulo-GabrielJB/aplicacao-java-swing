@@ -158,7 +158,7 @@ public class ClienteDaoJDBC implements Dao<Cliente>{
     }
     
     @Override
-    public Cliente findByNome(String nome){
+    public List<Cliente> findByNome(String nome){
         PreparedStatement ps = null;
         ResultSet rs = null;
         try{
@@ -172,11 +172,12 @@ public class ClienteDaoJDBC implements Dao<Cliente>{
             ps.setString(1, nome.toUpperCase());
             rs = ps.executeQuery();
             
-            if(rs.next())
-                return instanciarCliente(rs);
-            else
-                throw new StandardException("Nenhuum cliente encontrado");
+            List<Cliente> clientes = new ArrayList<>();
             
+            while(rs.next())
+                clientes.add(instanciarCliente(rs));
+
+            return clientes;
             
         } catch (SQLException e){
             throw new StandardException("Erro " + e.getMessage().toLowerCase());

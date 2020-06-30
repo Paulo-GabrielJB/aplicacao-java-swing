@@ -1,6 +1,7 @@
 package br.com.paulo.swing.viewers;
 
 import br.com.paulo.swing.controllers.ClienteController;
+import br.com.paulo.swing.controllers.PesquisaController;
 import br.com.paulo.swing.dao.DaoFactory;
 import javax.swing.JOptionPane;
 
@@ -120,7 +121,7 @@ public class SistemaView extends javax.swing.JFrame {
     }//GEN-LAST:event_mCadastroActionPerformed
 
     private void miPesquisarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miPesquisarClienteActionPerformed
-        new PesquisaView().show();
+        new PesquisaView(new PesquisaController(DaoFactory.getClienteDao())).show();
     }//GEN-LAST:event_miPesquisarClienteActionPerformed
 
     private void mSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mSairActionPerformed
