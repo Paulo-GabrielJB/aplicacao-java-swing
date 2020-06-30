@@ -168,8 +168,8 @@ public class ClienteDaoJDBC implements Dao<Cliente>{
                     + "DT_NASCIMENTO, "
                     + "SX_CLIENTE, "
                     + "NR_TELEFONE FROM TB_CLIENTE "
-                    + "WHERE NM_CLIENTE = ?");
-            ps.setString(1, nome);
+                    + "WHERE UPPER(NM_CLIENTE) LIKE CONCAT('%', ?, '%')");
+            ps.setString(1, nome.toUpperCase());
             rs = ps.executeQuery();
             
             if(rs.next())
