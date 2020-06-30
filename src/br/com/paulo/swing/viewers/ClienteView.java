@@ -11,6 +11,8 @@ public class ClienteView extends javax.swing.JFrame {
     
     public ClienteView() {
         initComponents();
+        
+        pnBotoesAcao.setVisible(false);
     }
 
    
@@ -37,7 +39,7 @@ public class ClienteView extends javax.swing.JFrame {
         rBtnFemilino = new javax.swing.JRadioButton();
         pnBotoesAcao = new javax.swing.JPanel();
         btnSalvar = new javax.swing.JButton();
-        c = new javax.swing.JButton();
+        btnAtualizar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbClientes = new javax.swing.JTable();
@@ -111,6 +113,7 @@ public class ClienteView extends javax.swing.JFrame {
         lblNome.setText("Nome: ");
         lblNome.setName("txtNome"); // NOI18N
 
+        txtNome.setEditable(false);
         txtNome.setName("txtNome"); // NOI18N
 
         lblCPF.setText("CPF:");
@@ -119,9 +122,13 @@ public class ClienteView extends javax.swing.JFrame {
         lblSexo.setText("Sexo:");
         lblSexo.setName("lblSexo"); // NOI18N
 
+        txtCPF.setEditable(false);
         txtCPF.setName("txtCPF"); // NOI18N
 
+        txtTelefone.setEditable(false);
         txtTelefone.setName("txtTelefone"); // NOI18N
+
+        dtcNascimento.setEnabled(false);
 
         rBtnMasculino.setText("M");
         rBtnMasculino.setFocusCycleRoot(true);
@@ -159,12 +166,12 @@ public class ClienteView extends javax.swing.JFrame {
             }
         });
 
-        c.setActionCommand("Atualizar");
-        c.setLabel("Atualizar");
-        c.setName("btnAtualizar"); // NOI18N
-        c.addActionListener(new java.awt.event.ActionListener() {
+        btnAtualizar.setActionCommand("Atualizar");
+        btnAtualizar.setLabel("Atualizar");
+        btnAtualizar.setName("btnAtualizar"); // NOI18N
+        btnAtualizar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cActionPerformed(evt);
+                btnAtualizarActionPerformed(evt);
             }
         });
 
@@ -182,7 +189,7 @@ public class ClienteView extends javax.swing.JFrame {
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnCancelar))
                     .addComponent(btnSalvar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(c, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnAtualizar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         pnBotoesAcaoLayout.setVerticalGroup(
@@ -191,7 +198,7 @@ public class ClienteView extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(btnSalvar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(c)
+                .addComponent(btnAtualizar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnCancelar))
         );
@@ -203,11 +210,6 @@ public class ClienteView extends javax.swing.JFrame {
             .addGroup(pnDadosLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnDadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblSexo)
-                    .addGroup(pnDadosLayout.createSequentialGroup()
-                        .addComponent(lblDtNascimento)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(dtcNascimento, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(pnDadosLayout.createSequentialGroup()
                         .addGroup(pnDadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblNome)
@@ -223,7 +225,15 @@ public class ClienteView extends javax.swing.JFrame {
                                         .addComponent(txtNome, javax.swing.GroupLayout.Alignment.LEADING))
                                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(pnBotoesAcao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(pnBotoesAcao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(pnDadosLayout.createSequentialGroup()
+                        .addGroup(pnDadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblSexo)
+                            .addGroup(pnDadosLayout.createSequentialGroup()
+                                .addComponent(lblDtNascimento)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(dtcNascimento, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         pnDadosLayout.setVerticalGroup(
@@ -316,12 +326,18 @@ public class ClienteView extends javax.swing.JFrame {
         pack();
     }//GEN-END:initComponents
 
-    private void cActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cActionPerformed
+    private void btnAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtualizarActionPerformed
         gravarAtualizarDados();
-    }//GEN-LAST:event_cActionPerformed
+    }//GEN-LAST:event_btnAtualizarActionPerformed
 
     private void btnNovoClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoClienteActionPerformed
         operacao = OperacoesCrud.NOVO.getOperacao();
+        btnEditarCliente.setEnabled(false);
+        btnAtualizar.setVisible(false);
+        btnExcluirCliente.setEnabled(false);
+        pnBotoesAcao.setVisible(true);
+        
+        abrirCampos();
     }//GEN-LAST:event_btnNovoClienteActionPerformed
 
     private void btnEditarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarClienteActionPerformed
@@ -346,13 +362,13 @@ public class ClienteView extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAtualizar;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnEditarCliente;
     private javax.swing.JButton btnExcluirCliente;
     private javax.swing.JButton btnNovoCliente;
     private javax.swing.JButton btnSair;
     private javax.swing.JButton btnSalvar;
-    private javax.swing.JButton c;
     private com.toedter.calendar.JDateChooser dtcNascimento;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
@@ -382,5 +398,12 @@ public class ClienteView extends javax.swing.JFrame {
             logger.info("Outras operacaoes");
         
         
+    }
+    
+    private void abrirCampos(){
+        txtNome.setEditable(true);
+        txtCPF.setEditable(true);
+        txtTelefone.setEditable(true);
+        dtcNascimento.setEnabled(true);
     }
 }
