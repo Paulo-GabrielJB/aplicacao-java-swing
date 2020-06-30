@@ -426,15 +426,8 @@
       <SubComponents>
         <Component class="javax.swing.JTable" name="tbClientes">
           <Properties>
-            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-              <Table columnCount="6" rowCount="0">
-                <Column editable="true" title="Codigo" type="java.lang.Object"/>
-                <Column editable="true" title="Nome" type="java.lang.Object"/>
-                <Column editable="true" title="CPF" type="java.lang.Object"/>
-                <Column editable="true" title="Sexo" type="java.lang.Object"/>
-                <Column editable="true" title="Dt. Nascimento" type="java.lang.Object"/>
-                <Column editable="true" title="Telefone" type="java.lang.Object"/>
-              </Table>
+            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="new javax.swing.table.DefaultTableModel(&#xa;    new Object [][] {&#xa;&#xa;    },&#xa;    new String [] {&#xa;        &quot;Codigo&quot;, &quot;Nome&quot;, &quot;CPF&quot;, &quot;Sexo&quot;, &quot;Dt. Nascimento&quot;, &quot;Telefone&quot;&#xa;    }&#xa;){&#xa;public boolean isCellEditable(int row, int column){&#xa;    return false;&#xa;}&#xa;}&#xa;" type="code"/>
             </Property>
             <Property name="name" type="java.lang.String" value="tbClientes" noResource="true"/>
             <Property name="showGrid" type="boolean" value="true"/>
@@ -442,6 +435,9 @@
               <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tbClientesMouseClicked"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

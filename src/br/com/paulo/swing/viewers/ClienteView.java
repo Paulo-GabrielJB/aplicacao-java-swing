@@ -1,23 +1,32 @@
 package br.com.paulo.swing.viewers;
 
 import br.com.paulo.swing.controllers.ClienteController;
+import br.com.paulo.swing.exceptions.DataIntegrityException;
 import br.com.paulo.swing.exceptions.StandardException;
+import br.com.paulo.swing.listeners.DataChangeListener;
 import br.com.paulo.swing.models.Cliente;
 import br.com.paulo.swing.utils.OperacoesCrud;
+import br.com.paulo.swing.utils.Util;
+import java.text.ParseException;
 import java.util.List;
 import java.util.logging.Logger; 
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import javax.swing.JFrame;
+import java.util.HashSet;
+import java.util.Set;
+import javax.swing.ListSelectionModel;
 
 
 public class ClienteView extends javax.swing.JFrame {
 
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    private Set<DataChangeListener> listeners = new HashSet<>();
     public Integer operacao;
     private ClienteController clienteController;
     private final Logger logger = Logger.getLogger(ClienteView.class.getName());
+    private Cliente cliente;
     
     public ClienteView() {
         initComponents();
@@ -33,7 +42,21 @@ public class ClienteView extends javax.swing.JFrame {
         pnBotoesAcao.setVisible(false);
         limparCampos();
     }
-
+    
+    public ClienteView(ClienteController clienteController, Cliente cliente) {
+        this.clienteController = clienteController;
+        initComponents();
+        pnBotoesAcao.setVisible(false);
+        limparCampos();
+        btnNovoCliente.setEnabled(false);
+        this.cliente = cliente;
+        preencherCampos();
+    }
+    
+    public void addListener(DataChangeListener listener){
+        listeners.add(listener);
+    }
+    
    
     @SuppressWarnings("unchecked")
     private void initComponents() {//GEN-BEGIN:initComponents
@@ -324,46 +347,56 @@ public class ClienteView extends javax.swing.JFrame {
             new String [] {
                 "Codigo", "Nome", "CPF", "Sexo", "Dt. Nascimento", "Telefone"
             }
-        ));
-        tbClientes.setName("tbClientes"); // NOI18N
-        tbClientes.setShowGrid(true);
-        jScrollPane1.setViewportView(tbClientes);
+        ){
+            public boolean isCellEditable(int row, int column){
+                return false;
+            }
+        }
+    );
+    tbClientes.setName("tbClientes"); // NOI18N
+    tbClientes.setShowGrid(true);
+    tbClientes.addMouseListener(new java.awt.event.MouseAdapter() {
+        public void mouseClicked(java.awt.event.MouseEvent evt) {
+            tbClientesMouseClicked(evt);
+        }
+    });
+    jScrollPane1.setViewportView(tbClientes);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+    javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+    getContentPane().setLayout(layout);
+    layout.setHorizontalGroup(
+        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(layout.createSequentialGroup()
+            .addContainerGap()
+            .addComponent(pnAcoes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+            .addComponent(pnDados, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(pnAcoes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(pnDados, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 736, Short.MAX_VALUE)
+                .addContainerGap()))
+    );
+    layout.setVerticalGroup(
+        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(layout.createSequentialGroup()
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 736, Short.MAX_VALUE)
-                    .addContainerGap()))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(pnAcoes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(16, 16, 16)
-                        .addComponent(pnDados, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(304, Short.MAX_VALUE))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(245, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap()))
-        );
+                    .addComponent(pnAcoes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(16, 16, 16)
+                    .addComponent(pnDados, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+            .addContainerGap(304, Short.MAX_VALUE))
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(245, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap()))
+    );
 
-        pack();
+    pack();
     }//GEN-END:initComponents
 
     private void btnAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtualizarActionPerformed
@@ -376,22 +409,40 @@ public class ClienteView extends javax.swing.JFrame {
         btnAtualizar.setVisible(false);
         btnExcluirCliente.setEnabled(false);
         pnBotoesAcao.setVisible(true);
-        rBtnFemilino.setEnabled(true);
-        rBtnMasculino.setEnabled(true);
         abrirCampos();
+        limparCampos();
     }//GEN-LAST:event_btnNovoClienteActionPerformed
 
     private void btnEditarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarClienteActionPerformed
-        operacao = OperacoesCrud.EDITAR.getOperacao();
+        if(cliente != null){
+            operacao = OperacoesCrud.EDITAR.getOperacao();
+            btnSalvar.setVisible(false);
+            btnExcluirCliente.setEnabled(false);
+            btnNovoCliente.setEnabled(false);
+            pnBotoesAcao.setVisible(true);
+            abrirCampos();
+            txtCPF.setEditable(false);
+        } else
+            JOptionPane.showMessageDialog(null, "Selecione um cliente", "Erro", JOptionPane.ERROR_MESSAGE);
     }//GEN-LAST:event_btnEditarClienteActionPerformed
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
        gravarAtualizarDados();
-       updateTable();
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnExcluirClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirClienteActionPerformed
-        // TODO add your handling code here:
+        if(cliente != null){
+            int option = JOptionPane.showConfirmDialog(null, "Realmente deseja excluir?", "Confirmacao", JOptionPane.YES_NO_OPTION);
+            if(option == JOptionPane.YES_OPTION){
+                try {
+                    clienteController.delete(cliente);
+                } catch(StandardException e){
+                    JOptionPane.showMessageDialog(null, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+                }
+                updateTable();
+            }
+        } else
+            JOptionPane.showMessageDialog(null, "Selecione um cliente", "Erro", JOptionPane.ERROR_MESSAGE);
     }//GEN-LAST:event_btnExcluirClienteActionPerformed
 
     private void rBtnFemilinoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rBtnFemilinoActionPerformed
@@ -403,9 +454,7 @@ public class ClienteView extends javax.swing.JFrame {
     }//GEN-LAST:event_rBtnMasculinoActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        btnEditarCliente.setEnabled(true);
-        btnAtualizar.setVisible(true);
-        btnExcluirCliente.setEnabled(true);
+        cliente = null;
         fecharCampos();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
@@ -417,6 +466,18 @@ public class ClienteView extends javax.swing.JFrame {
     private void txtTelefoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTelefoneActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtTelefoneActionPerformed
+
+    private void tbClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbClientesMouseClicked
+        ListSelectionModel tableSelectionModel = tbClientes.getSelectionModel();
+        
+        tbClientes.setSelectionModel(tableSelectionModel);
+        
+        instanciarCliente(true);
+        
+        preencherCampos();
+        
+                
+    }//GEN-LAST:event_tbClientesMouseClicked
 
     
     public static void main(String args[]) {
@@ -456,13 +517,30 @@ public class ClienteView extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     
-    private Cliente instanciarCliente(){
-        Cliente cliente = new Cliente();
-        cliente.setNome(txtNome.getText());
-        cliente.setCpf(txtCPF.getText());
-        cliente.setSexo(rBtnMasculino.isSelected() ? 'M' : 'F');
-        cliente.setNascimento(new java.sql.Date(dtcNascimento.getDate().getTime()));
-        cliente.setTelefone(txtTelefone.getText());
+    private Cliente instanciarCliente(boolean fromTable){
+        
+        cliente = new Cliente();       
+        
+        if(fromTable){
+        
+            cliente.setCodigo(Util.parseLong(tbClientes.getValueAt(tbClientes.getSelectedRow(), 0)));
+        
+            cliente.setNome(Util.parseString(tbClientes.getValueAt(tbClientes.getSelectedRow(), 1)));
+        
+            cliente.setCpf(Util.parseString(tbClientes.getValueAt(tbClientes.getSelectedRow(), 2)));
+        
+            cliente.setSexo(Util.parseChar(tbClientes.getValueAt(tbClientes.getSelectedRow(), 3)));
+        
+            cliente.setTelefone(Util.parseString(tbClientes.getValueAt(tbClientes.getSelectedRow(), 5)));
+            
+            try {
+                cliente.setNascimento(Util.parseSqlDate( sdf.parse( tbClientes.getValueAt(tbClientes.getSelectedRow(), 4).toString() )));
+            } catch(ParseException e){
+                cliente.setNascimento(Util.parseSqlDate(new Date()));
+            }
+        } else  
+            atualizarCliente();
+        
         return cliente;
     }
     
@@ -491,23 +569,43 @@ public class ClienteView extends javax.swing.JFrame {
         return valido;
     }
     
+    private void atualizarCliente(){
+        cliente.setNome(txtNome.getText());
+        cliente.setCpf(txtCPF.getText());
+        cliente.setSexo(rBtnMasculino.isSelected() ? 'M' : 'F');
+        cliente.setNascimento(Util.parseSqlDate(dtcNascimento.getDate()));
+        cliente.setTelefone(txtTelefone.getText());
+    }
+    
     private void gravarAtualizarDados() {
         try {
             if(operacao.equals(OperacoesCrud.NOVO.getOperacao())){
                 if(validarCampos()){
-                    clienteController.insert(instanciarCliente());
+                    clienteController.insert(instanciarCliente(false));
                     fecharCampos();
                     JOptionPane.showMessageDialog(null, "Registro inserido com sucesso!", "Successo", JOptionPane.INFORMATION_MESSAGE);
                 } else
                     lblErro.setVisible(true);
            
-            } else if(operacao.equals(OperacoesCrud.EDITAR.getOperacao()))
-                logger.info("Operacao de ediitar");
-            else 
-                logger.info("Outras operacaoes");
+            } else if(operacao.equals(OperacoesCrud.EDITAR.getOperacao())){
+                if(validarCampos()){
+                    atualizarCliente();
+                    clienteController.update(cliente);
+                    fecharCampos();
+                    JOptionPane.showMessageDialog(null, "Registro editado com sucesso!", "Successo", JOptionPane.INFORMATION_MESSAGE);
+                } else
+                    lblErro.setVisible(true);
+            }
          } catch(StandardException e) {
                 JOptionPane.showMessageDialog(null, e.getMessage(), "Erro ao insetir dados", JOptionPane.ERROR_MESSAGE);
-         }
+         } finally {
+            if(listeners.size() > 0){
+                for(DataChangeListener dcl: listeners)
+                    dcl.onDataChange();
+                this.dispose();
+            }
+            updateTable();
+        }
         
     }
     
@@ -519,6 +617,12 @@ public class ClienteView extends javax.swing.JFrame {
         rBtnFemilino.setEnabled(false);
         rBtnMasculino.setEnabled(false);
         pnBotoesAcao.setVisible(false);
+        btnExcluirCliente.setEnabled(true);
+        btnNovoCliente.setEnabled(true);
+        btnSalvar.setVisible(true);
+        btnEditarCliente.setEnabled(true);
+        btnAtualizar.setVisible(true);
+        btnSalvar.setVisible(true);
         limparCampos();
     }
     
@@ -527,13 +631,14 @@ public class ClienteView extends javax.swing.JFrame {
         txtCPF.setEditable(true);
         txtTelefone.setEditable(true);
         dtcNascimento.setEnabled(true);
+        rBtnFemilino.setEnabled(true);
+        rBtnMasculino.setEnabled(true);
         lblErro.setVisible(false);
     }
     
     private void updateTable() {
         List<Cliente> clientes = clienteController.findAll();
-        DefaultTableModel model = (DefaultTableModel)tbClientes.getModel();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        DefaultTableModel model = ((DefaultTableModel)tbClientes.getModel());
   
         int rowCount = model.getRowCount();
         
@@ -551,7 +656,10 @@ public class ClienteView extends javax.swing.JFrame {
                         c.getTelefone()
                     }
             );
+        
+        tbClientes.setModel(model);
     }
+    
     
     private void limparCampos(){
         txtNome.setText("");
@@ -562,4 +670,25 @@ public class ClienteView extends javax.swing.JFrame {
         rBtnMasculino.setSelected(true);
         lblErro.setVisible(false);
     }
+
+    private void preencherCampos() {
+        txtNome.setText(cliente.getNome());
+        
+        txtCPF.setText(cliente.getCpf());
+        
+        txtTelefone.setText(cliente.getTelefone());
+        
+        dtcNascimento.setDate(new Date(cliente.getNascimento().getTime()));
+        
+        if(cliente.getSexo().equals('M')){
+            rBtnMasculino.setSelected(true);
+            rBtnFemilino.setSelected(false);
+        }
+        else{
+            rBtnMasculino.setSelected(false);
+            rBtnFemilino.setSelected(true);
+        }
+    }
+
+ 
 }

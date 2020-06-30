@@ -1,15 +1,24 @@
 package br.com.paulo.swing.viewers;
 
+import br.com.paulo.swing.controllers.ClienteController;
 import br.com.paulo.swing.controllers.PesquisaController;
+import br.com.paulo.swing.dao.DaoFactory;
+import br.com.paulo.swing.listeners.DataChangeListener;
 import br.com.paulo.swing.models.Cliente;
+import br.com.paulo.swing.utils.Util;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
 
-public class PesquisaView extends javax.swing.JFrame {
+public class PesquisaView extends javax.swing.JFrame implements DataChangeListener{
     
     private PesquisaController pesquisaController;
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    private Cliente cliente;
 
     public PesquisaView() {
         initComponents();
@@ -69,6 +78,11 @@ public class PesquisaView extends javax.swing.JFrame {
             }
         ));
         tbClientes.setName("tbClientes"); // NOI18N
+        tbClientes.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbClientesMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tbClientes);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -115,6 +129,18 @@ public class PesquisaView extends javax.swing.JFrame {
         updateTable();
     }//GEN-LAST:event_btnBuscarActionPerformed
 
+    private void tbClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbClientesMouseClicked
+        ListSelectionModel tableSelectionModel = tbClientes.getSelectionModel();
+        
+        tbClientes.setSelectionModel(tableSelectionModel);
+        
+        instanciarCliente();
+        
+        ClienteView cv = new ClienteView(new ClienteController(DaoFactory.getClienteDao()), cliente);
+        cv.addListener(this);
+        cv.show();
+    }//GEN-LAST:event_tbClientesMouseClicked
+
  
     public static void main(String args[]) {
      
@@ -141,7 +167,6 @@ public class PesquisaView extends javax.swing.JFrame {
     private void updateTable() {
         List<Cliente> clientes = pesquisaController.buscarClientePorNome(txtNome.getText());
         DefaultTableModel model = (DefaultTableModel)tbClientes.getModel();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
   
         int rowCount = model.getRowCount();
         
@@ -159,6 +184,32 @@ public class PesquisaView extends javax.swing.JFrame {
                         c.getTelefone()
                     }
             );
+    }
+    
+     private void instanciarCliente(){
+        
+        cliente = new Cliente();       
+
+        cliente.setCodigo(Util.parseLong(tbClientes.getValueAt(tbClientes.getSelectedRow(), 0)));
+        
+        cliente.setNome(Util.parseString(tbClientes.getValueAt(tbClientes.getSelectedRow(), 1)));
+        
+        cliente.setCpf(Util.parseString(tbClientes.getValueAt(tbClientes.getSelectedRow(), 2)));
+        
+        cliente.setSexo(Util.parseChar(tbClientes.getValueAt(tbClientes.getSelectedRow(), 3)));
+        
+        cliente.setTelefone(Util.parseString(tbClientes.getValueAt(tbClientes.getSelectedRow(), 5)));
+            
+        try {
+            cliente.setNascimento(Util.parseSqlDate( sdf.parse( tbClientes.getValueAt(tbClientes.getSelectedRow(), 4).toString() )));
+        } catch(ParseException e){
+            cliente.setNascimento(Util.parseSqlDate(new Date()));
+        }
+    }
+
+    @Override
+    public void onDataChange() {
+        updateTable();
     }
     
 }
