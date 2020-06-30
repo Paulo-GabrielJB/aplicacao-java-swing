@@ -171,7 +171,7 @@
                                           <Component id="txtCPF" alignment="0" pref="165" max="32767" attributes="0"/>
                                           <Component id="txtNome" alignment="0" max="32767" attributes="0"/>
                                       </Group>
-                                      <Component id="jPanel1" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="pSexo" alignment="0" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="32767" attributes="0"/>
                                   <Component id="pnBotoesAcao" min="-2" max="-2" attributes="0"/>
@@ -218,7 +218,6 @@
                                           <Component id="lblDtNascimento" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                       <Group type="102" alignment="0" attributes="0">
-                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                           <Component id="lblSexo" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                           <Component id="dtcNascimento" min="-2" max="-2" attributes="0"/>
@@ -227,8 +226,7 @@
                                   <EmptySpace max="32767" attributes="0"/>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jPanel1" max="32767" attributes="0"/>
+                                  <Component id="pSexo" max="32767" attributes="0"/>
                                   <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
                               </Group>
                           </Group>
@@ -301,7 +299,7 @@
             <Property name="enabled" type="boolean" value="false"/>
           </Properties>
         </Component>
-        <Container class="javax.swing.JPanel" name="jPanel1">
+        <Container class="javax.swing.JPanel" name="pSexo">
 
           <Layout>
             <DimensionLayout dim="0">
@@ -331,15 +329,23 @@
               <Properties>
                 <Property name="selected" type="boolean" value="true"/>
                 <Property name="text" type="java.lang.String" value="M"/>
+                <Property name="enabled" type="boolean" value="false"/>
                 <Property name="focusCycleRoot" type="boolean" value="true"/>
                 <Property name="name" type="java.lang.String" value="rBtnMasculino" noResource="true"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="rBtnMasculinoActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JRadioButton" name="rBtnFemilino">
               <Properties>
                 <Property name="text" type="java.lang.String" value="F"/>
+                <Property name="enabled" type="boolean" value="false"/>
                 <Property name="name" type="java.lang.String" value="rBtnFemilino" noResource="true"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="rBtnFemilinoActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -403,6 +409,9 @@
                 <Property name="text" type="java.lang.String" value="Cancelar"/>
                 <Property name="name" type="java.lang.String" value="btnCancelar" noResource="true"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCancelarActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>

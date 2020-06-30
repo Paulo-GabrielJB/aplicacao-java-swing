@@ -1,10 +1,8 @@
 package br.com.paulo.swing.controllers;
 
 import br.com.paulo.swing.dao.Dao;
-import br.com.paulo.swing.exceptions.StandardException;
 import br.com.paulo.swing.models.Cliente;
 import java.util.List;
-import javax.swing.JOptionPane;
 
 public class ClienteController{
 
