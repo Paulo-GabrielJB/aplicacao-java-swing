@@ -11,4 +11,8 @@ public interface Dao<T> {
     T update(T obj);
     void delete(T obj);
     
+    default T findByNome(String nome){
+        return null;
+    }
+    
 }

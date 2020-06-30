@@ -1,5 +1,6 @@
-package br.com.paulo.swing.db;
+package br.com.paulo.swing.dao.impl;
 
+import br.com.paulo.swing.db.DB;
 import br.com.paulo.swing.exceptions.StandardException;
 import br.com.paulo.swing.models.Login;
 import java.sql.PreparedStatement;

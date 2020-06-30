@@ -1,17 +1,32 @@
 package br.com.paulo.swing.viewers;
 
+import br.com.paulo.swing.controllers.ClienteController;
+import br.com.paulo.swing.exceptions.StandardException;
+import br.com.paulo.swing.models.Cliente;
 import br.com.paulo.swing.utils.OperacoesCrud;
+import java.util.List;
 import java.util.logging.Logger; 
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import java.text.SimpleDateFormat;
 
 
 public class ClienteView extends javax.swing.JFrame {
 
     public Integer operacao;
+    private ClienteController clienteController;
     private final Logger logger = Logger.getLogger(ClienteView.class.getName());
     
     public ClienteView() {
         initComponents();
-        
+        updateTable();
+        pnBotoesAcao.setVisible(false);
+    }
+    
+    public ClienteView(ClienteController clienteController) {
+        this.clienteController = clienteController;
+        initComponents();
+        updateTable();
         pnBotoesAcao.setVisible(false);
     }
 
@@ -130,6 +145,7 @@ public class ClienteView extends javax.swing.JFrame {
 
         dtcNascimento.setEnabled(false);
 
+        rBtnMasculino.setSelected(true);
         rBtnMasculino.setText("M");
         rBtnMasculino.setFocusCycleRoot(true);
         rBtnMasculino.setName("rBtnMasculino"); // NOI18N
@@ -143,9 +159,9 @@ public class ClienteView extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(rBtnMasculino)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(rBtnFemilino)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 12, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -277,16 +293,14 @@ public class ClienteView extends javax.swing.JFrame {
 
         tbClientes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+
             },
             new String [] {
                 "Codigo", "Nome", "CPF", "Sexo", "Dt. Nascimento", "Telefone"
             }
         ));
         tbClientes.setName("tbClientes"); // NOI18N
+        tbClientes.setShowGrid(true);
         jScrollPane1.setViewportView(tbClientes);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -346,6 +360,7 @@ public class ClienteView extends javax.swing.JFrame {
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
        gravarAtualizarDados();
+       updateTable();
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnExcluirClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirClienteActionPerformed
@@ -388,16 +403,41 @@ public class ClienteView extends javax.swing.JFrame {
     private javax.swing.JTextField txtTelefone;
     // End of variables declaration//GEN-END:variables
 
+    
+    private Cliente instanciarCliente(){
+        Cliente cliente = new Cliente();
+        cliente.setNome(txtNome.getText());
+        cliente.setCpf(txtCPF.getText());
+        cliente.setSexo(rBtnMasculino.isSelected() ? 'M' : 'F');
+        cliente.setNascimento(new java.sql.Date(dtcNascimento.getDate().getTime()));
+        cliente.setTelefone(txtTelefone.getText());
+        return cliente;
+    }
+    
     private void gravarAtualizarDados() {
+        try {
+            if(operacao.equals(OperacoesCrud.NOVO.getOperacao())){
+            
+                clienteController.insert(instanciarCliente());
+                pnBotoesAcao.setVisible(false);
+                fecharCampos();
+                JOptionPane.showMessageDialog(null, "Registro inserido com sucesso!", "Successo", JOptionPane.OK_OPTION);
+           
+            } else if(operacao.equals(OperacoesCrud.EDITAR.getOperacao()))
+                logger.info("Operacao de ediitar");
+            else 
+                logger.info("Outras operacaoes");
+         } catch(StandardException e) {
+                JOptionPane.showMessageDialog(null, e.getMessage(), "Erro ao insetir dados", JOptionPane.ERROR_MESSAGE);
+         }
         
-        if(operacao.equals(OperacoesCrud.NOVO.getOperacao()))
-            logger.info("Operacao de criar");
-        else if(operacao.equals(OperacoesCrud.EDITAR.getOperacao()))
-            logger.info("Operacao de ediitar");
-        else 
-            logger.info("Outras operacaoes");
-        
-        
+    }
+    
+    private void fecharCampos(){
+        txtNome.setEditable(false);
+        txtCPF.setEditable(false);
+        txtTelefone.setEditable(false);
+        dtcNascimento.setEnabled(false);
     }
     
     private void abrirCampos(){
@@ -405,5 +445,28 @@ public class ClienteView extends javax.swing.JFrame {
         txtCPF.setEditable(true);
         txtTelefone.setEditable(true);
         dtcNascimento.setEnabled(true);
+    }
+    
+    private void updateTable() {
+        List<Cliente> clientes = clienteController.findAll();
+        DefaultTableModel model = (DefaultTableModel)tbClientes.getModel();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+  
+        int rowCount = model.getRowCount();
+        
+        for(int i = rowCount - 1; i >= 0; i--)
+            model.removeRow(i);
+        
+        for(Cliente c: clientes)
+            model.addRow(
+                    new Object[]{
+                        c.getCodigo(),
+                        c.getNome(),
+                        c.getCpf(),
+                        c.getSexo().toString(),
+                        sdf.format(c.getNascimento()),
+                        c.getTelefone()
+                    }
+            );
     }
 }

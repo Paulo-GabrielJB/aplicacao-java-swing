@@ -1,6 +1,6 @@
 package br.com.paulo.swing.controllers;
 
-import br.com.paulo.swing.db.LoginDao;
+import br.com.paulo.swing.dao.impl.LoginDao;
 import br.com.paulo.swing.models.Login;
 
 public class LoginController {

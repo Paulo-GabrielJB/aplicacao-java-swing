@@ -1,8 +1,7 @@
 package br.com.paulo.swing.viewers;
 
 import br.com.paulo.swing.controllers.LoginController;
-import br.com.paulo.swing.db.DB;
-import br.com.paulo.swing.db.LoginDao;
+import br.com.paulo.swing.dao.DaoFactory;
 import br.com.paulo.swing.exceptions.StandardException;
 import br.com.paulo.swing.models.Login;
 import javax.swing.JOptionPane;
@@ -14,12 +13,18 @@ public class LoginView extends javax.swing.JFrame {
     
     public LoginView(LoginController loginController){
         this.loginController = loginController;
+        initComponents();  
+        lblError.setVisible(false);
     }
 
     public LoginView() {
-        loginController = new LoginController(new LoginDao(DB.getConnection()));
+        loginController = new LoginController(DaoFactory.getLoginDao());
         initComponents();  
         lblError.setVisible(false);
+    }
+
+    public void setLoginController(LoginController loginController) {
+        this.loginController = loginController;
     }
 
     @SuppressWarnings("unchecked")
