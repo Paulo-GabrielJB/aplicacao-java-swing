@@ -31,19 +31,20 @@ public class ClienteView extends javax.swing.JFrame {
         initComponents();
         pnBotoesAcao.setVisible(false);
         limparCampos();
-        addConstraint();
     }
     
     public ClienteView(ClienteController clienteController) {
         this();
         this.clienteController = clienteController;
         updateTable();
-        
     }
     
     public ClienteView(ClienteController clienteController, Cliente cliente) {
-        this(clienteController);
+        initComponents();
+        limparCampos();
+        pnBotoesAcao.setVisible(false);
         btnNovoCliente.setEnabled(false);
+        this.clienteController = clienteController;
         this.cliente = cliente;
         preencherCampos();
     }
@@ -433,8 +434,14 @@ public class ClienteView extends javax.swing.JFrame {
                     clienteController.delete(cliente);
                 } catch(StandardException e){
                     JOptionPane.showMessageDialog(null, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+                } finally {
+                    if(listeners.size() > 0){
+                        for(DataChangeListener dcl: listeners)
+                            dcl.onDataChange();
+                        this.dispose();
+                    }
+                    updateTable();
                 }
-                updateTable();
             }
         } else
             JOptionPane.showMessageDialog(null, "Selecione um cliente", "Erro", JOptionPane.ERROR_MESSAGE);
@@ -685,8 +692,4 @@ public class ClienteView extends javax.swing.JFrame {
         }
     }
     
-    private void addConstraint(){
-        
-    }
- 
 }
