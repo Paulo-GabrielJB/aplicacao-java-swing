@@ -1,7 +1,7 @@
 package br.com.paulo.swing.viewers;
 
+import br.com.paulo.swing.components.JNumberTextField;
 import br.com.paulo.swing.controllers.ClienteController;
-import br.com.paulo.swing.exceptions.DataIntegrityException;
 import br.com.paulo.swing.exceptions.StandardException;
 import br.com.paulo.swing.listeners.DataChangeListener;
 import br.com.paulo.swing.models.Cliente;
@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.swing.ListSelectionModel;
 
-
 public class ClienteView extends javax.swing.JFrame {
 
     private static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -30,24 +29,20 @@ public class ClienteView extends javax.swing.JFrame {
     
     public ClienteView() {
         initComponents();
-        updateTable();
         pnBotoesAcao.setVisible(false);
         limparCampos();
+        addConstraint();
     }
     
     public ClienteView(ClienteController clienteController) {
+        this();
         this.clienteController = clienteController;
-        initComponents();
         updateTable();
-        pnBotoesAcao.setVisible(false);
-        limparCampos();
+        
     }
     
     public ClienteView(ClienteController clienteController, Cliente cliente) {
-        this.clienteController = clienteController;
-        initComponents();
-        pnBotoesAcao.setVisible(false);
-        limparCampos();
+        this(clienteController);
         btnNovoCliente.setEnabled(false);
         this.cliente = cliente;
         preencherCampos();
@@ -73,7 +68,7 @@ public class ClienteView extends javax.swing.JFrame {
         txtNome = new javax.swing.JTextField();
         lblCPF = new javax.swing.JLabel();
         lblSexo = new javax.swing.JLabel();
-        txtCPF = new javax.swing.JTextField();
+        txtCPF = new JNumberTextField();
         pSexo = new javax.swing.JPanel();
         rBtnMasculino = new javax.swing.JRadioButton();
         rBtnFemilino = new javax.swing.JRadioButton();
@@ -82,7 +77,7 @@ public class ClienteView extends javax.swing.JFrame {
         btnAtualizar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
         lblErro = new javax.swing.JLabel();
-        txtTelefone = new javax.swing.JTextField();
+        txtTelefone = new JNumberTextField();
         dtcNascimento = new com.toedter.calendar.JDateChooser();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbClientes = new javax.swing.JTable();
@@ -371,7 +366,7 @@ public class ClienteView extends javax.swing.JFrame {
             .addComponent(pnAcoes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
             .addComponent(pnDados, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addContainerGap(15, Short.MAX_VALUE))
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
@@ -689,6 +684,9 @@ public class ClienteView extends javax.swing.JFrame {
             rBtnFemilino.setSelected(true);
         }
     }
-
+    
+    private void addConstraint(){
+        
+    }
  
 }
